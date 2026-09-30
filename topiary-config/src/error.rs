@@ -95,10 +95,15 @@ impl fmt::Display for TopiaryConfigError {
             TopiaryConfigError::TreeSitterFacade(_) => {
                 write!(f, "We could not load the grammar for the given language")
             }
-            TopiaryConfigError::Nickel { error, .. } => write!(
-                f,
-                "Nickel error: {error:#?}\n\nDid you forget to add a \"priority\" annotation in your config file?"
-            ),
+            TopiaryConfigError::Nickel { .. } => {
+                // NOTE(mkatychev) semantics of the error should be taken care of by the nickel `Reporter` attached to `Program`
+                // such as `LogReporter` because the `nickel_lang_core::Error` does _not_ implement
+                // `Display`
+                write!(
+                    f,
+                    "Nickel error: Did you forget to add a \"priority\" annotation in your config file?"
+                )
+            }
             TopiaryConfigError::NickelDeserialization { error, .. } => {
                 write!(f, "Failed to deserialize Topiary configuration: {error}")
             }
